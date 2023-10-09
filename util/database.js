@@ -12,8 +12,10 @@ const MongoClient = mongodb.MongoClient;
 
 let db;
 
+require('dotenv').config()
+
 exports.mongoConnect = (callback) => {
-  MongoClient.connect('mongodb+srv://balaji:qwerty2000@cluster0.3quxtkg.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp')
+  MongoClient.connect(process.env.MONGODB_URL)
     .then((client) => {
       console.log("success");
       // console.log(result);
@@ -29,7 +31,7 @@ exports.getDb = () => {
   if(db) {
     return db;
   }
-  throw 'Np Database Found!'
+  throw 'No Database Found!'
 }
 
 
