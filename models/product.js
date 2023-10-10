@@ -15,7 +15,7 @@ class Product {
     let dbOp;
     if(this._id) {
       //update
-      console.log(this,"update prods");
+      // console.log(this,"update prods");
       dbOp = db.collection('products') 
         .updateOne({_id : this._id},{$set : this});   
     }
@@ -34,7 +34,7 @@ class Product {
     const db = getDb();
     return db.collection('products').find().toArray()
       .then((products) => {
-        console.log(products);
+        // console.log(products);
         return products;
       }).catch((err) => {
         console.log(err);
@@ -47,7 +47,7 @@ class Product {
       .find({_id: new mongoDb.ObjectId(prodId)})
       .next()
       .then((product) => {
-        console.log(product);
+        // console.log(product);
         return product;
       }).catch((err) => {
         console.log(err);
@@ -59,7 +59,7 @@ class Product {
     return db.collection('products')
       .deleteOne({_id: new mongoDb.ObjectId(prodId)})
       .then((result) => {
-        console.log(result,"Deleted");
+        // console.log(result,"Deleted");
       }).catch((err) => {
         console.log(err);
       });
