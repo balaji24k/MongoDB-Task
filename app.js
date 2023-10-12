@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById("6527e45aa4528796b8715c83")
+  User.findById("6527fea00b30fc463950b9f3")
     .then(user => {
       req.user = user;
       next();
@@ -40,7 +40,7 @@ require('dotenv').config()
 
 mongoose.connect(process.env.MONGODB_URL)
   .then((result) => {
-    User.findById().then((user) => {
+    User.findOne().then((user) => {
       if(!user) {
         const user = new User({
           name: "balaji",

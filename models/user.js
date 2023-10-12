@@ -1,27 +1,55 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   cart: {
     items: [
       {
-        productId: {type: Schema.Types.ObjectId,ref: 'Product' , required: true}, 
-        quantity: { type: Number, required: true}
-      }
-    ]
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: { type: Number, required: true },
+      },
+    ],
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+userSchema.methods.addToCart = function (product) {
+  const cartProductIndex = this.cart.items.findIndex(
+    (item) => item.productId.toString() === product._id.toString()
+  );
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items];
+  if (cartProductIndex >= 0) {
+    // console.log("if");
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    // console.log("else");
+    updatedCartItems.push({
+      productId: product._id,
+      quantity: newQuantity,
+    });
+  }
+  const updatedCart = {
+    items: updatedCartItems,
+  };
+  this.cart = updatedCart;
+  return this.save();
+};
+
+module.exports = mongoose.model("User", userSchema);
 
 // const getDb  = require('../util/database').getDb;
 // const mongoDb = require('mongodb');
@@ -30,12 +58,12 @@ module.exports = mongoose.model('User', userSchema);
 
 // class User {
 //   constructor(userName, email, cart, id) {
-//     this.userName = userName; 
+//     this.userName = userName;
 //     this.email = email;
 //     this.cart = cart;
-//     this._id = id; 
+//     this._id = id;
 //   }
-                 
+
 //   save() {
 //     const db = getDb();
 //     return db.collection('users').insertOne(this);
@@ -54,8 +82,8 @@ module.exports = mongoose.model('User', userSchema);
 //     }
 //     else{
 //       console.log("else");
-//       updatedCartItems.push({ 
-//         productId : new ObjectId(product._id), 
+//       updatedCartItems.push({
+//         productId : new ObjectId(product._id),
 //         quantity : newQuantity
 //       });
 //     }
@@ -65,7 +93,7 @@ module.exports = mongoose.model('User', userSchema);
 //     const db = getDb();
 //     return db.collection('users')
 //       .updateOne(
-//         { _id : new ObjectId(this._id)}, 
+//         { _id : new ObjectId(this._id)},
 //         { $set: {cart : updatedCart}}
 //       )
 //   }
@@ -80,7 +108,7 @@ module.exports = mongoose.model('User', userSchema);
 //       .then((products) => {
 //         return products.map(p => {
 //           return {
-//             ...p, 
+//             ...p,
 //             quantity: this.cart.items.find(i => {
 //               return i.productId.toString() === p._id.toString();
 //             }).quantity
@@ -98,7 +126,7 @@ module.exports = mongoose.model('User', userSchema);
 //     const db = getDb();
 //     return db.collection('users')
 //       .updateOne(
-//         { _id : new ObjectId(this._id)}, 
+//         { _id : new ObjectId(this._id)},
 //         { $set: {cart : {items: updatedCartItems}}}
 //       )
 //   }
@@ -113,7 +141,7 @@ module.exports = mongoose.model('User', userSchema);
 //             _id: new ObjectId(this._id),
 //             name: this.name,
 //           }
-//         } 
+//         }
 //         return db.collection('orders').insertOne(order);
 //       })
 //       .then((result) => {
@@ -121,7 +149,7 @@ module.exports = mongoose.model('User', userSchema);
 //         return db
 //           .collection('users')
 //           .updateOne(
-//             { _id : new ObjectId(this._id)}, 
+//             { _id : new ObjectId(this._id)},
 //             { $set: {cart : {items: []}}}
 //           );
 //       })
